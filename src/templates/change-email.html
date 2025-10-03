@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+        <title>Voip24h</title>
+        <!-- Get bootstrap from CDN-->
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        />
+        <style>
+            .title {
+                color: black;
+                font-weight: bold;
+            }
+            .info {
+                font-size: 18px;
+            }
+            .text-1 {
+                font-size: 18px;
+                font-weight: 500;
+                color: black !important
+            }
+            .text-2 {
+                font-size: 18px;
+                font-weight: 500;
+                color: #303287;
+            }
+            .box-phone {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+            }
+            .box-phone svg {
+                width: 30px;
+                height: 30px;
+                color: red;
+            }
+            .box-phone p {
+                margin-bottom: 0;
+                font-size: 22px;
+                font-weight: bold;
+                color: #303187;
+            }
+            .bar-box {
+                width: 100%;
+                display: flex;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+            }
+          
+            .bar-left {
+                width: 50%;
+                height: 100%;
+                background-color: #48c8f4;
+            }
+            .bar-left::after {
+                display: block;
+                content: "";
+                width: 16px;
+                height: 16px;
+                clip-path: polygon(100% 0, 100% 1%, 0 100%, 0 0);
+                margin-left: auto;
+                background-color: #48c8f4;
+            }
+            .bar-right {
+                width: 50%;
+                height: 100%;
+                background-color: #ee4036;
+            }
+            .bar-right::after {
+                display: block;
+                content: "";
+                width: 16px;
+                height: 16px;
+                clip-path: polygon(100% 0, 100% 1%, 0 100%, 0 0);
+                background-color: #48c8f4;
+            }
+            .info{
+                color: black !important
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container box-large">
+            <div class="mt-5">
+                <img
+                    src="https://res.cloudinary.com/dytzlfxyp/image/upload/v1711884120/logo_prkpfh.png"
+                    alt=""
+                />
+            </div>
+
+            <h1 class="text-left mt-5 title">Kính chào quý khách</h1>
+
+            <div class="text-left">
+                <p class="mt-5 info">
+                    Quý Khách hoặc ai đó đã yêu cầu thay đổi email từ <br />
+                    {{email_old}} thành {{email_new}} <br />
+                    Vui lòng <a href="{{Link}}"> click vào đây </a> (hiệu lực 5 phút) để thay đổi
+                    email đăng nhập mới. <br />
+                    Thông tin đăng nhập:<br />
+                    <strong>Email đăng nhập:</strong>{{email_new}}<br />
+                    Nếu không phải, vui lòng bỏ qua email này.
+                </p>
+
+                <div class="mt-4">
+                    <p class="text-1">Trân trọng!</p>
+                    <p class="text-2">VOIP24H Team</p>
+                    <div class="box-phone">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="w-6 h-6"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z"
+                            />
+                        </svg>
+                        <p>1900 2002</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bar-box">
+                <div class="bar-left"></div>
+                <div class="bar-right"></div>
+            </div>
+        </div>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
