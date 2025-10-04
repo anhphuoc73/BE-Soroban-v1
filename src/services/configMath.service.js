@@ -18,10 +18,11 @@ const { Long } = require('mongodb');
 const mongoose = require('mongoose');
 
 class ConfigMathService {
-    updateConfigFingerMath = async ({ numberQuestion, calculationLength, timePerCalculation, timeAnswer, keyLesson, valueLesson, keyParent, valueParent, rangeResult, firstNumber, secondNumber, displayStyle, displayStyleName, soundEnabled, soundEnabledName }, user) => {
+    updateConfigFingerMath = async ({ mathTypeId, mathTypeName, numberQuestion, calculationLength, timePerCalculation, timeAnswer, keyLesson, valueLesson, keyParent, valueParent, rangeResult, firstNumber, secondNumber, displayStyle, displayStyleName, soundEnabled, soundEnabledName }, user) => {
         const id = user._id.toString()
-        // keyParent, valueParent
         const finger_math = {
+            "mathTypeId": +mathTypeId,
+            "mathTypeName": mathTypeName,
             "numberQuestion": numberQuestion,
             "calculationLength": calculationLength,
             "timePerCalculation": timePerCalculation,
@@ -38,10 +39,36 @@ class ConfigMathService {
             "soundEnabled": +soundEnabled,
             "soundEnabledName": soundEnabledName
         }
+
+        const soroban_math = {
+            "mathTypeId": +mathTypeId,
+            "mathTypeName": mathTypeName,
+            "numberQuestion": numberQuestion,
+            "calculationLength": calculationLength,
+            "timePerCalculation": timePerCalculation,
+            "timeAnswer": +timeAnswer,
+            "keyLesson": +keyLesson,
+            "valueLesson": valueLesson,
+            "keyParent": +keyParent,
+            "valueParent": valueParent,
+            "rangeResult": +rangeResult,
+            "firstNumber": +firstNumber,
+            "secondNumber": +secondNumber,
+            "displayStyle": +displayStyle,
+            "displayStyleName": displayStyleName,
+            "soundEnabled": +soundEnabled,
+            "soundEnabledName": soundEnabledName
+        }
+
+
         const userModel = await getUserModel(INSTANCE_KEY.PRIMARY, "admin")
         const updatedUser = await userModel.findByIdAndUpdate(
             id,
-            { $set: { finger_math } },
+            {
+                $set: +mathTypeId === 1
+                    ? { finger_math }
+                    : { soroban_math }
+            },
             { new: true }
         );
         return updatedUser;
@@ -100,7 +127,8 @@ class ConfigMathService {
         // // Tính kết quả bằng eval (cẩn thận khi dùng eval)
         // const result = eval(expression);
 
-        return { expression: '8 + 6 + 2 + 1 - 2 - 4 + 5 + 1 + 2 - 3 + 5 + 7 - 4', result: 14 }
+        return { expression: '8 + 6 ', result: 14 }
+        // return { expression: '8 + 6 + 2 + 1 - 2 - 4 + 5 + 1 + 2 - 3 + 5 + 7 - 4', result: 14 }
     }
 
     getStore = async (user) => {
