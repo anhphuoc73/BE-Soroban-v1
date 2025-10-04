@@ -81,6 +81,12 @@ class UserService {
             expired_time: Long.fromNumber(moment(expiredDate, 'YYYY-MM-DD').endOf('day').unix()),
             finger_math: fingerMath,
             soroban_math: fingerMath,
+            // thêm vào đây
+            ...(this.fingerMath
+                ? { mathTypeId: 1, mathTypeName: "finger" }
+                : this.sorobanMath
+                    ? { mathTypeId: 2, mathTypeName: "soroban" }
+                    : {}),
         }
         const userModel = await getUserModel(INSTANCE_KEY.PRIMARY, "admin")
         const checkUser = await userModel.findOne({ phone: phone })
