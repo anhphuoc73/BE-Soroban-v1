@@ -16,6 +16,7 @@ const sha1 = require("sha1");
 const moment = require('moment');
 const { Long } = require('mongodb');
 const mongoose = require('mongoose');
+const sorobanService = require("./soroban.service");
 
 class ConfigMathService {
     updateConfigFingerMath = async ({ mathTypeId, mathTypeName, numberQuestion, calculationLength, timePerCalculation, timeAnswer, keyLesson, valueLesson, keyParent, valueParent, rangeResult, firstNumber, secondNumber, displayStyle, displayStyleName, soundEnabled, soundEnabledName }, user) => {
@@ -74,9 +75,16 @@ class ConfigMathService {
         return updatedUser;
     }
 
-    createPracticeFingerMath = async ({ numberQuestion, calculationLength, timePerCalculation, timeAnswer, keyLesson, valueLesson, rangeResult, firstNumber, secondNumber, displayStyle, displayStyleName, soundEnabled, soundEnabledName }, user) => {
-
-        return this.randomExpression()
+    createPracticeFingerMath = async (body, user) => {
+        const { count,
+            main,
+            digits1,
+            digits2,
+            allowExceed } = body
+        if (!count || !main || !digits1 || !digits2 || allowExceed === undefined) {
+            throw new UnprocessableEntityError("Missing required fields")
+        }
+        return sorobanService.randomOperations(body)
     }
 
     savePracticeFingerMath = async (math, user) => {

@@ -16,7 +16,7 @@ class ConfigMathController {
         const user = req.user
         return new OK(
             StatusResponse.configMath.UPDATE_CONFIG_MATH,
-            await configMathService.createPracticeFingerMath(req.body, user)
+            await configMathService.createPracticeFingerMath({...req.body}, user)
         ).send(res)
     }
 
