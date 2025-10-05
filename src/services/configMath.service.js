@@ -19,7 +19,7 @@ const mongoose = require('mongoose');
 const sorobanService = require("./soroban.service");
 
 class ConfigMathService {
-    updateConfigFingerMath = async ({ mathTypeId, mathTypeName, numberQuestion, calculationLength, timePerCalculation, timeAnswer, keyLesson, valueLesson, keyParent, valueParent, rangeResult, firstNumber, secondNumber, displayStyle, displayStyleName, soundEnabled, soundEnabledName }, user) => {
+    updateConfigFingerMath = async ({ mathTypeId, mathTypeName, numberQuestion, calculationLength, timePerCalculation, timeAnswer, keyLesson, valueLesson, keyParent, valueParent, rangeResult, firstNumber, secondNumber, displayStyle, displayStyleName, soundEnabled, soundEnabledName, allowExceed }, user) => {
         const id = user._id.toString()
         const finger_math = {
             "mathTypeId": +mathTypeId,
@@ -38,7 +38,8 @@ class ConfigMathService {
             "displayStyle": +displayStyle,
             "displayStyleName": displayStyleName,
             "soundEnabled": +soundEnabled,
-            "soundEnabledName": soundEnabledName
+            "soundEnabledName": soundEnabledName,
+            "allowExceed": 0
         }
 
         const soroban_math = {
@@ -58,7 +59,8 @@ class ConfigMathService {
             "displayStyle": +displayStyle,
             "displayStyleName": displayStyleName,
             "soundEnabled": +soundEnabled,
-            "soundEnabledName": soundEnabledName
+            "soundEnabledName": soundEnabledName,
+            "allowExceed": +allowExceed
         }
 
 
