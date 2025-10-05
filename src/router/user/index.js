@@ -10,6 +10,8 @@ router.post("/", asyncHandler(userController.createUser))
 
 router.put("/", asyncHandler(userController.updateUser))
 
+router.put("/update-password", asyncHandler(userController.updatePassword))
+
 router.put("/add-student-class", asyncHandler(userController.addStudentClass))
 
 router.delete("/", asyncHandler(userController.deleteUser))
