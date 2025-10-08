@@ -5,6 +5,7 @@ const { authentication } = require("~/auth/authUtils");
 const { asyncHandler } = require("~/helpers/asyncHandler");
 const { checkPermission } = require("~/middlewares/checkRole");
 router.post("/practice-finger-math", asyncHandler(configMathController.practiceFingerMath))
+router.post("/practice-finger-math-list", asyncHandler(configMathController.runOperations))
 
 router.use(authentication);
 

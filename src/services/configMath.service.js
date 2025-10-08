@@ -89,6 +89,20 @@ class ConfigMathService {
         return sorobanService.randomOperations(body)
     }
 
+    runOperations = async (body) => {
+        const { count,
+            main,
+            digits1,
+            digits2,
+            allowExceed } = body
+        if (!count || !main || !digits1 || !digits2 || allowExceed === undefined) {
+            throw new UnprocessableEntityError("Missing required fields")
+        }
+        return sorobanService.runOperations(body.number, body)
+    }
+
+
+
     savePracticeFingerMath = async (math, user) => {
         const id = user._id.toString()
         const username = user.username

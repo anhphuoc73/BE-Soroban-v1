@@ -1884,12 +1884,6 @@ function getRandomNDigitNumber(n, numbersArray, mustInclude, mainCourse) {
     if (mustInclude === undefined) {
         throw new Error("Số bắt buộc phải có không tồn tại trong mảng đầu vào");
     }
-
-    console.log("n:", n);
-    console.log("numbersArray:", numbersArray);
-    console.log("mustInclude:", mustInclude);
-    console.log("mainCourse:", mainCourse);
-
     let selectedNumbers = [];
 
     // Thêm số bắt buộc vào mảng nếu chưa có
@@ -1934,11 +1928,6 @@ function getRandomNDigitNumber(n, numbersArray, mustInclude, mainCourse) {
     // Kết hợp thành số nguyên
     const combinedNumber = parseInt(selectedNumbers.join(""));
 
-    console.log(`Số được tạo: ${combinedNumber}`);
-    console.log(
-        `Vị trí của ${mustInclude}: ${selectedNumbers.indexOf(mustInclude)}`
-    );
-
     return combinedNumber;
 }
 
@@ -1950,14 +1939,10 @@ const getRandomFirstDigitNumber = (
     allowExceed,
     maxNumber
 ) => {
-    console.log("mainCourse", mainCourse);
-    console.log("sign", sign);
 
     let randomMathObject = +mainCourse <= 4 ? randomMathSmall : randomMath;
     const validArray = randomMathObject[mainCourse][sign];
     const randomValidNumber = getRandomElement(validArray);
-    console.log("validArray", validArray);
-    console.log("randomValidNumber", randomValidNumber);
 
     let arrayRandom = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
@@ -1990,7 +1975,7 @@ const getRandomFirstDigitNumber = (
             );
             result = `${randomSecondSplitNumber}${randomFirstSplitNumber}`;
         } while (!allowExceed && parseInt(result) > maxNumber);
-
+        console.log("result----------------------", result);
         return result;
     }
 
@@ -2001,6 +1986,7 @@ const getRandomFirstDigitNumber = (
             +randomValidNumber,
             +mainCourse
         );
+        console.log("result----------------------", result);
     } while (!allowExceed && parseInt(result) > maxNumber);
 
     return result;
@@ -2014,10 +2000,10 @@ const randomNextNumber = (
     main,
     allowExceed,
     maxNumber,
-    originMain
+    originMain,
+    signBefore,
+    mathBefore
 ) => {
-    console.log("beforeValue:", beforeValue);
-    console.log("originMain:", originMain);
     let flag = beforeValue.length < length;
     if (flag) {
         sign = "+";
@@ -2053,8 +2039,7 @@ const randomNextNumber = (
                 const formula = formulaMap[+originMain];
                 // +originMain === 4 ? NO_FORMULA_SMALL : NO_FORMULA;
                 let newNumber;
-                console.log("maxLimit", maxLimit);
-                console.log("originMain", originMain);
+
                 do {
                     newNumber = getRandomNumberFromArray(
                         1,
@@ -2073,10 +2058,6 @@ const randomNextNumber = (
         let sumDigits = String(sum).split("").map(Number);
         allDigitsValid = sumDigits.every((digit) => digit <= 4);
 
-        console.log("Before:", beforeValue);
-        console.log("Random:", randomNumber);
-        console.log("Sum:", sum);
-        console.log("Valid:", allDigitsValid);
 
         attempts++;
         if (attempts >= maxAttempts) {
@@ -2084,23 +2065,15 @@ const randomNextNumber = (
             console.warn("Max attempts reached, returning fallback value.");
             return { randomNumber: beforeValue, sign, isMainExecute };
         }
-        console.log(
-            "Number(beforeValue) - Number(randomNumber)",
-            Number(beforeValue) - Number(randomNumber)
-        );
-        console.log("Number(beforeValue)", Number(beforeValue));
-        console.log("Number(randomNumber)", Number(randomNumber));
-        console.log(
-            "Number(beforeValue) - Number(randomNumber) < 0",
-            Number(beforeValue) - Number(randomNumber) < 0
-        );
+
     } while (
         randomNumber.length !== length ||
         randomNumber[0] === "0" ||
         (sign === "-" && Number(beforeValue) - Number(randomNumber) < 0) ||
         (!allowExceed &&
             sign === "+" &&
-            Number(beforeValue) + Number(randomNumber) > +maxNumber)
+            Number(beforeValue) + Number(randomNumber) > +maxNumber) ||
+        randomNumber === mathBefore && sign !== signBefore
     );
 
     return { randomNumber, sign, isMainExecute };
@@ -2139,6 +2112,7 @@ export const randomOperations = ({
     }
 
     let sign = "";
+
     if (+main < 10) {
         sign =
             +digits2 > +digits1 ? "+" : getRandomSign();
@@ -2173,7 +2147,14 @@ export const randomOperations = ({
             allowExceed,
             maxNumber
         );
+        if (numberFirst === 0 || numberFirst === "0") {
+            throw new BadRequestError("Số hạng 1 không được bằng 0")
+
+        }
         let math = `${numberFirst}`;
+        let signBefore = sign;
+        let mathBefore = math;
+
         let max = Math.max(+digits1, +digits2);
 
         let countMain = 0;
@@ -2210,11 +2191,16 @@ export const randomOperations = ({
                     main,
                     allowExceed,
                     maxNumber,
-                    originMain
+                    originMain,
+                    signBefore,
+                    mathBefore
                 );
 
                 math = `${math} ${nextNumber.sign
                     } ${nextNumber.randomNumber.toString()}`;
+                signBefore = nextNumber.sign;
+                mathBefore = nextNumber.randomNumber.toString();
+
 
                 if (nextNumber.isMainExecute) {
                     countMain += 4;
@@ -2234,6 +2220,8 @@ export const randomOperations = ({
                     sign = getRandomSign();
                 }
 
+
+
                 const nextNumber = randomNextNumber(
                     valueNumber.toString(),
                     length,
@@ -2242,13 +2230,17 @@ export const randomOperations = ({
                     main,
                     allowExceed,
                     maxNumber,
-                    originMain
+                    originMain,
+                    signBefore,
+                    mathBefore
                 );
                 math = `${math} ${nextNumber.sign
                     } ${nextNumber.randomNumber.toString()}`;
+                signBefore = nextNumber.sign;
+                mathBefore = nextNumber.randomNumber.toString();
             }
         }
-        return  { expression: math, result: eval(math) } 
+        return { expression: math, result: eval(math) }
     } catch (err) {
         if (retries > 0) {
             return randomOperations({
@@ -2262,5 +2254,39 @@ export const randomOperations = ({
         }
     }
 
+}
+
+export const runOperations = (n, {
+    count,
+    main,
+    digits1,
+    digits2,
+    allowExceed
+}) => {
+    const output = [];
+
+    for (let i = 0; i < n; i++) {
+        const { expression } = randomOperations({
+            count,
+            main,
+            digits1,
+            digits2,
+            allowExceed
+        });
+
+        const tokens = expression.split(' ');
+        const parsed = [tokens[0]];
+
+        for (let j = 1; j < tokens.length; j += 2) {
+            const operator = tokens[j];
+            const number = tokens[j + 1];
+
+            parsed.push(operator + number);
+        }
+
+        output.push(parsed);
+    }
+
+    return output;
 }
 
