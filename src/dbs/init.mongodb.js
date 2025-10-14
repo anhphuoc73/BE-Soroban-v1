@@ -21,6 +21,7 @@ class Database {
         const { host, username, password } = dbMongo[this.instanceKey];
 
         // const connectString = `mongodb://${username}:${password}@${host}/${dbName}?authSource=admin&directConnection=true`;
+        // const connectString = `mongodb://host.docker.internal:27017/${dbName}`;
         const connectString = `mongodb://localhost:27017/${dbName}`;
 
         console.log(`🔗 Connecting to MongoDB: ${connectString}`);

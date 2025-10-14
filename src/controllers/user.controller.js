@@ -20,13 +20,13 @@ class UserController {
         ).send(res)
     }
 
-    updateUser = async (req, res, next) => {
-        const user = req.user
-        return new OK(
-            StatusResponse.user.UPDATE_USER,
-            await userService.updatePassword(req.body, user)
-        ).send(res)
-    }
+    // updateUser = async (req, res, next) => {
+    //     const user = req.user
+    //     return new OK(
+    //         StatusResponse.user.UPDATE_USER,
+    //         await userService.updatePassword(req.body, user)
+    //     ).send(res)
+    // }
 
     addStudentClass = async (req, res, next) => {
         const user = req.user
