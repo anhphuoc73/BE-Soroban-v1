@@ -22,7 +22,7 @@ class Database {
 
         // const connectString = `mongodb://${username}:${password}@${host}/${dbName}?authSource=admin&directConnection=true`;
         // const connectString = `mongodb://host.docker.internal:27017/${dbName}`;
-        const connectString = `mongodb://localhost:27017/${dbName}`;
+        const connectString = `mongodb://103.216.118.179:27017/${dbName}`;
 
         console.log(`🔗 Connecting to MongoDB: ${connectString}`);
 
