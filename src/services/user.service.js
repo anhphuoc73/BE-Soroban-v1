@@ -99,7 +99,7 @@ class UserService {
     updateUser = async ({ id, centerId, teacherId, fullname, phone, address, position, expiredDate, birthDay, active }, user) => {
         const positionAuth = user?.position
         if (positionAuth !== 2 && positionAuth !== 3) {
-            throw new UnprocessableEntityError('Tài khoản không có quyền sửa người dùng');
+            throw new UnprocessableEntityError('Tài khoản không có quyền sửa thông tin người dùng');
         }
         if (!id) throw new UnprocessableEntityError('id người dùng bị trống')
         let payload = {
@@ -135,26 +135,23 @@ class UserService {
         return updatedUser;
     }
 
-    // updatePassword = async ({ newPassword, oldPassword }, user) => {
-    //     const id = user._id.toString()
-    //     const username = user.username.toString()
-    //     if (newPassword !== oldPassword) throw new UnprocessableEntityError('Mật khẩu cũ và mật khẩu mới không trùng khơp')
+    updatePassword = async ({ newPassword, oldPassword }, user) => {
+        const id = user._id.toString()
+        const username = user.username.toString()
+        if (newPassword !== oldPassword) throw new UnprocessableEntityError('Mật khẩu cũ và mật khẩu mới không trùng khơp')
+        const userModel = await getUserModel(INSTANCE_KEY.PRIMARY, "admin")
+        const checkUser = await userModel.findOne({ username: username });
+        const passwordSystem = checkUser?.password
+        if (passwordSystem !== sha1(convertToMD5(newPassword))) throw new UnprocessableEntityError('Mật khẩu cũ không đúng')
+        const payload = {
+            password: sha1(convertToMD5(newPassword))
+        }
+        const updatePassword = await userModel.findByIdAndUpdate(id, payload, {
+            new: true,
+        })
+        return updatePassword
+    }
 
-    //     const userModel = await getUserModel(INSTANCE_KEY.PRIMARY, "admin")
-    //     const checkUser = await userModel.findOne({ username: username });
-
-    //     const passwordSystem = checkUser?.password
-
-    //     if (passwordSystem !== sha1(md5(newPassword))) throw new UnprocessableEntityError('Mật khẩu cũ không đúng')
-
-    //     const payload = {
-    //         password: sha1(md5(newPassword))
-    //     }
-    //     const updatePassword = await userModel.findByIdAndUpdate(id, payload, {
-    //         new: true,
-    //     })
-    //     return updatePassword
-    // }
     addStudentClass = async ({ id, classId }, user) => {
         const positionAuth = user?.position
         if (positionAuth !== 2) throw new UnprocessableEntityError('Tài khoản không có quyền thêm học sinh vào lớp')
