@@ -88,6 +88,8 @@ class UserService {
                 : this.sorobanMath
                     ? { mathTypeId: 2, mathTypeName: "soroban" }
                     : {}),
+            totalCorrect: 0,
+            totalWrong: 0,
         }
         const userModel = await getUserModel(INSTANCE_KEY.PRIMARY, "admin")
         const checkUser = await userModel.findOne({ phone: phone })
