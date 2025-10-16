@@ -136,13 +136,14 @@ class UserService {
     }
 
     updatePassword = async ({ newPassword, oldPassword }, user) => {
+        console.log({ newPassword, oldPassword })
         const id = user._id.toString()
         const username = user.username.toString()
-        if (newPassword !== oldPassword) throw new UnprocessableEntityError('Mật khẩu cũ và mật khẩu mới không trùng khơp')
+
         const userModel = await getUserModel(INSTANCE_KEY.PRIMARY, "admin")
         const checkUser = await userModel.findOne({ username: username });
         const passwordSystem = checkUser?.password
-        if (passwordSystem !== sha1(convertToMD5(newPassword))) throw new UnprocessableEntityError('Mật khẩu cũ không đúng')
+        if (passwordSystem !== sha1(convertToMD5(oldPassword))) throw new UnprocessableEntityError('Mật khẩu cũ không đúng')
         const payload = {
             password: sha1(convertToMD5(newPassword))
         }
