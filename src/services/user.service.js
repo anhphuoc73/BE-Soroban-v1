@@ -202,7 +202,6 @@ class UserService {
         }
         if (search) query.fullname = { $regex: search, $options: 'i' }
 
-        console.log(filters)
         if (filters?.position && filters?.position !== "") {
             const allowedPositions = query.position.$in;
             const filterPosition = Number(filters.position);

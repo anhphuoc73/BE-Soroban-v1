@@ -134,6 +134,31 @@ class ConfigMathService {
         return create
     }
 
+    historyMathByUser = async ({ userId, page, limit }, user) => {
+        let queryUser = {
+            _id: new ObjectId(userId)
+        }
+        const userModel = await getUserModel(INSTANCE_KEY.PRIMARY, "admin")
+        const findUser = await userModel.findOne(queryUser)
+
+        const stored = await this.getStore(findUser)
+
+        const query = {
+            userId: userId
+        }
+
+
+        const skip = (+page - 1) * +limit;
+
+
+
+        const mathModel = await getMathModel(INSTANCE_KEY.PRIMARY, stored)
+        const maths = await mathModel.find(query).skip(skip).limit(limit).lean().exec();
+        // console.log("maths", JSON.stringify(maths, null, 2))
+        const count = await mathModel.countDocuments(query);
+        return { data: maths, total: count }
+    }
+
     randomExpression = () => {
         // const operators = ['+', '-'];
         // let expression = '';
@@ -156,6 +181,15 @@ class ConfigMathService {
     }
 
     getStore = async (user) => {
+        const position = user?.position
+        let stored = ""
+        if (position === 2) stored = user._id.toString()
+        if (position === 3) stored = user._id.toString()
+        if (position === 4 || position === 5) stored = user.centerId.toString()
+        return stored
+    }
+
+    getStoreById = async (user) => {
         const position = user?.position
         let stored = ""
         if (position === 2) stored = user._id.toString()
