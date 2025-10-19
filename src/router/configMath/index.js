@@ -14,6 +14,8 @@ router.put("/config-finger-math", asyncHandler(configMathController.configFinger
 
 router.post("/save-practice-finger-math", asyncHandler(configMathController.savePracticeFingerMath))
 
+router.get("/history-math-by-user", asyncHandler(configMathController.historyMathByUser))
+
 
 
 
