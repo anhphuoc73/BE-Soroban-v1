@@ -19,7 +19,8 @@ const mongoose = require('mongoose');
 const sorobanService = require("./soroban.service");
 
 class ConfigMathService {
-    updateConfigFingerMath = async ({ mathTypeId, mathTypeName, numberQuestion, calculationLength, timePerCalculation, timeAnswer, keyLesson, valueLesson, keyParent, valueParent, rangeResult, firstNumber, secondNumber, displayStyle, displayStyleName, soundEnabled, soundEnabledName, allowExceed }, user) => {
+    updateConfigFingerMath = async ({ mathTypeId, mathTypeName, numberQuestion, calculationLength, timePerCalculation, timeAnswer, keyLesson, valueLesson, keyParent, valueParent, rangeResult, firstNumber, secondNumber, displayStyle, displayStyleName, soundEnabled, soundEnabledName, allowExceed, fullname, teachername }, user) => {
+        console.log({ mathTypeId, mathTypeName, numberQuestion, calculationLength, timePerCalculation, timeAnswer, keyLesson, valueLesson, keyParent, valueParent, rangeResult, firstNumber, secondNumber, displayStyle, displayStyleName, soundEnabled, soundEnabledName, allowExceed, fullname, teachername })
         const id = user._id.toString()
         const finger_math = {
             "mathTypeId": +mathTypeId,
@@ -39,9 +40,10 @@ class ConfigMathService {
             "displayStyleName": displayStyleName,
             "soundEnabled": +soundEnabled,
             "soundEnabledName": soundEnabledName,
-            "allowExceed": 0
+            "allowExceed": 0,
+            "fullname": fullname,
+            "teachername": teachername,
         }
-
         const soroban_math = {
             "mathTypeId": +mathTypeId,
             "mathTypeName": mathTypeName,
@@ -60,10 +62,14 @@ class ConfigMathService {
             "displayStyleName": displayStyleName,
             "soundEnabled": +soundEnabled,
             "soundEnabledName": soundEnabledName,
-            "allowExceed": +allowExceed
+            "allowExceed": +allowExceed,
+            "fullname": fullname,
+            "teachername": teachername,
         }
 
 
+        console.log("finger_math", finger_math)
+        console.log("id", id)
         const userModel = await getUserModel(INSTANCE_KEY.PRIMARY, "admin")
         const updatedUser = await userModel.findByIdAndUpdate(
             id,
