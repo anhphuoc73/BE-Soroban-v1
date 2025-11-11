@@ -1,3 +1,6 @@
+import { ApplicationCommandPermissionType } from "discord.js";
+import { BadRequestError } from "~/core/error.response";
+
 const readline = require("readline");
 
 const rl = readline.createInterface({
@@ -1975,7 +1978,6 @@ const getRandomFirstDigitNumber = (
             );
             result = `${randomSecondSplitNumber}${randomFirstSplitNumber}`;
         } while (!allowExceed && parseInt(result) > maxNumber);
-        console.log("result----------------------", result);
         return result;
     }
 
@@ -1986,7 +1988,6 @@ const getRandomFirstDigitNumber = (
             +randomValidNumber,
             +mainCourse
         );
-        console.log("result----------------------", result);
     } while (!allowExceed && parseInt(result) > maxNumber);
 
     return result;
@@ -2027,7 +2028,7 @@ const randomNextNumber = (
                 +originMain === 4 ? randomMathSmall : randomMath;
             if (
                 randomMathObject[main][sign] &&
-                randomMathObject[main][sign].includes(+numberArray[i]) &&
+                randomMathObject[main][sign].includes(length === 1 ? +numberArray[numberArray.length - 1] : +numberArray[i]) &&
                 isMainCourse
             ) {
                 isMainCourse = true;
@@ -2049,7 +2050,6 @@ const randomNextNumber = (
                     newNumber > maxLimit ||
                     (i === length - 1 && newNumber === 0)
                 ); // Đảm bảo chữ số đầu không phải 0
-
                 randomNumber = newNumber.toString() + randomNumber;
             }
         }
@@ -2075,7 +2075,6 @@ const randomNextNumber = (
             Number(beforeValue) + Number(randomNumber) > +maxNumber) ||
         randomNumber === mathBefore && sign !== signBefore
     );
-
     return { randomNumber, sign, isMainExecute };
 };
 
@@ -2084,8 +2083,8 @@ export const randomOperations = ({
     main,
     digits1,
     digits2,
-    allowExceed
-}, retries = 5) => {
+    allowExceed,
+}, retries = 10) => {
     main = parseInt(main);
     let originMain = parseInt(main);
     if (main === 4) {
@@ -2106,10 +2105,10 @@ export const randomOperations = ({
     digits2 = parseInt(digits2);
 
     // // Kiểm tra số hạng 2 phải nhỏ hơn hoặc bằng số hạng 1
-    if (digits2 > digits1) {
-        throw new BadRequestError("Số hạng 2 không được lớn hơn số hạng 1. Vui lòng nhập lại.")
+    // if (digits2 > digits1) {
+    //     throw new BadRequestError("Số hạng 2 không được lớn hơn số hạng 1. Vui lòng nhập lại.")
 
-    }
+    // }
 
     let sign = "";
 
@@ -2158,11 +2157,15 @@ export const randomOperations = ({
         let max = Math.max(+digits1, +digits2);
 
         let countMain = 0;
+
         for (let i = 0; i < count - 1; i++) {
-            let length =
-                +digits1 === +digits2
+            let length = +digits2;
+            if (i > 0) {
+                length = +digits1 === +digits2
                     ? max
                     : Math.floor(Math.random() * max) + 1;
+            }
+
 
             if (i === countMain) {
                 if (+main < 10) {
@@ -2195,7 +2198,6 @@ export const randomOperations = ({
                     signBefore,
                     mathBefore
                 );
-
                 math = `${math} ${nextNumber.sign
                     } ${nextNumber.randomNumber.toString()}`;
                 signBefore = nextNumber.sign;

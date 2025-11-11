@@ -88,11 +88,15 @@ class ConfigMathService {
             main,
             digits1,
             digits2,
-            allowExceed } = body
-        if (!count || !main || !digits1 || !digits2 || allowExceed === undefined) {
+        } = body
+        if (!count || !main || !digits1 || !digits2) {
             throw new UnprocessableEntityError("Missing required fields")
         }
-        return sorobanService.randomOperations(body)
+        let allowExceed = body.allowExceed === "yes" ? true : false
+        return sorobanService.randomOperations({
+            ...body,
+            allowExceed
+        })
     }
 
     runOperations = async (body) => {
@@ -100,11 +104,12 @@ class ConfigMathService {
             main,
             digits1,
             digits2,
-            allowExceed } = body
-        if (!count || !main || !digits1 || !digits2 || allowExceed === undefined) {
+             } = body
+        if (!count || !main || !digits1 || !digits2) {
             throw new UnprocessableEntityError("Missing required fields")
         }
-        return sorobanService.runOperations(body.number, body)
+         let allowExceed = body.allowExceed === "yes" ? true : false
+        return sorobanService.runOperations(body.number, {...body, allowExceed})
     }
 
 
