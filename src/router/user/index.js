@@ -8,6 +8,8 @@ const { checkPermission } = require("~/middlewares/checkRole");
 router.use(authentication);
 router.post("/", asyncHandler(userController.createUser))
 
+router.post("/create-list-user", asyncHandler(userController.createListUser))
+
 router.put("/", asyncHandler(userController.updateUser))
 
 router.put("/update-password", asyncHandler(userController.updatePassword))

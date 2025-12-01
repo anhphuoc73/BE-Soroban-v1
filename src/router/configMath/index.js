@@ -7,6 +7,8 @@ const { checkPermission } = require("~/middlewares/checkRole");
 router.post("/practice-finger-math", asyncHandler(configMathController.practiceFingerMath))
 router.post("/practice-finger-math-list", asyncHandler(configMathController.runOperations))
 
+router.post("/practice-finger-math-multiply-division", asyncHandler(configMathController.practiceFingerMathMultiplyDivision))
+
 router.use(authentication);
 
 router.put("/config-finger-math", asyncHandler(configMathController.configFingerMath))

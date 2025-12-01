@@ -11,6 +11,7 @@ const userSchema = new Schema(
         password: { type: String, trim: true },
         fullname: { type: String, trim: true },
         position: { type: Number, trim: true },
+        caculation: { type: Number, trim: true },
         centerId: { type: String, trim: true },
         teacherId: { type: String, trim: true },
         centerName: { type: String, trim: true },
