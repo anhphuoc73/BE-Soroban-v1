@@ -12,6 +12,12 @@ class UserController {
             await userService.createUser(req.body, user)
         ).send(res)
     }
+    createListUser = async (req, res, next) => {
+        const user = req.user
+        return new OK(
+            await userService.createListUser(req, user)
+        ).send(res)
+    }
     updateUser = async (req, res, next) => {
         const user = req.user
         return new OK(

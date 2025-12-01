@@ -19,6 +19,14 @@ class ConfigMathController {
             await configMathService.createPracticeFingerMath({...req.body}, user)
         ).send(res)
     }
+
+    practiceFingerMathMultiplyDivision = async (req, res, next) => {
+        const user = req.user
+        return new OK(
+            StatusResponse.configMath.UPDATE_CONFIG_MATH,
+            await configMathService.practiceFingerMathMultiplyDivision({...req.body}, user)
+        ).send(res)
+    }
     runOperations = async (req, res, next) => {
         const user = req.user
         return new OK(

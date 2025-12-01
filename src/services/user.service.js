@@ -47,6 +47,14 @@ class UserService {
         const users = await userModel.findOne(query)
         return users?.centerName
     }
+    getUserById = async (id) => {
+        let query = {
+            _id: new ObjectId(id)
+        }
+        const userModel = await getUserModel(INSTANCE_KEY.PRIMARY, "admin")
+        const users = await userModel.findOne(query)
+        return users?.centerName
+    }
     createUser = async ({ fullname, phone, address, expiredDate, birthDay, centerId, position, centerName }, user) => {
         const positionAuth = user?.position
         if (positionAuth !== 2) throw new UnprocessableEntityError('Tài khoản không có quyền tạo người dùng')
@@ -96,6 +104,79 @@ class UserService {
         if (checkUser) throw new UnprocessableEntityError('Số điện thoại tạo tài khoản này đã tồn tại')
         return await userModel.create(payload)
     }
+
+    createListUser = async (req, user) => {
+        const listUser = req?.body
+        const fingerMath = await this.fingerMath()
+        for (const item of listUser) {
+            try {
+                // ===== XỬ LÝ EXPIRED DATE =====
+                let baseDate = item?.expiredDate
+                    ? moment(item.expiredDate).utcOffset(7)  // set GMT+7
+                    : moment().utcOffset(7).add(3, "months");
+
+                baseDate = baseDate.hour(23).minute(59).second(59);
+
+                const expiredDate = baseDate.format("YYYY-MM-DD HH:mm:ss");
+                const expiredDateTimestamp = Long.fromNumber(baseDate.unix()).toString();
+
+
+
+                // ===== CHECK USER =====
+                const userModel = await getUserModel(INSTANCE_KEY.PRIMARY, "admin");
+                const checkUser = await userModel.findOne({ phone: item?.phone });
+
+                if (!checkUser) {
+                    const centerName =
+                        item?.centerName ??
+                        (await this.getUserById(item?.centerId))?.name ??
+                        "";
+
+                    const payload = {
+                        username: item?.phone,
+                        password: sha1(convertToMD5(item?.phone.toString())),
+                        centerName,
+                        centerId: item?.centerId,
+                        fullname: item?.fullname,
+                        phone: item?.phone,
+                        address: "",
+                        position: item?.position,
+                        active: 1,
+                        birth_day: "",
+                        birth_day_time: "",
+
+                        create_date: moment().format("YYYY-MM-DD HH:mm:ss"),
+                        create_time: moment().unix(),
+                        update_date: moment().format("YYYY-MM-DD HH:mm:ss"),
+                        update_time: moment().unix(),
+
+                        expired_date: expiredDate,
+                        expired_time: expiredDateTimestamp,
+
+                        finger_math: fingerMath,
+                        soroban_math: fingerMath,
+
+                        ...(this.fingerMath
+                            ? { mathTypeId: 1, mathTypeName: "finger" }
+                            : this.sorobanMath
+                                ? { mathTypeId: 2, mathTypeName: "soroban" }
+                                : {}),
+
+                        totalCorrect: 0,
+                        totalWrong: 0,
+                    };
+
+                    await userModel.create(payload);
+                }
+
+            } catch (err) {
+                console.error("🔥 Lỗi khi tạo user:", item?.phone, err);
+            }
+        }
+
+
+    }
+
     updateUser = async ({ id, centerId, teacherId, fullname, phone, address, position, expiredDate, birthDay, active }, user) => {
         const positionAuth = user?.position
         if (positionAuth !== 2 && positionAuth !== 3) {
