@@ -2077,6 +2077,28 @@ const randomNextNumber = (
     );
     return { randomNumber, sign, isMainExecute };
 };
+export const getRandomChildId = (childId) => {
+    const synthesisMap = {
+        90: [4, 5, 6, 7, 8, 9],
+        130: [10, 11, 12, 13],
+        170: [14, 15, 16, 17],
+        260: [18, 19, 20, 21, 22, 23, 24, 25, 26],
+        300: [27, 28, 29, 30],
+        390: [31, 32, 33, 34, 35, 36, 37, 38, 39],
+        430: [40, 41, 42, 43]
+    };
+
+    // Kiểm tra nếu childId là một trong các giá trị tổng hợp
+    if (synthesisMap[childId]) {
+        const array = synthesisMap[childId];
+        // Random một phần tử trong mảng
+        const randomIndex = Math.floor(Math.random() * array.length);
+        return array[randomIndex];
+    }
+
+    // Nếu không phải tổng hợp, trả về chính childId
+    return childId;
+};
 
 export const randomOperations = ({
     count,
@@ -2270,7 +2292,7 @@ export const runOperations = (n, {
     for (let i = 0; i < n; i++) {
         const { expression } = randomOperations({
             count,
-            main,
+            main: getRandomChildId(+main),
             digits1,
             digits2,
             allowExceed

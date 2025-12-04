@@ -100,6 +100,7 @@ class ConfigMathService {
         let allowExceed = body.allowExceed === "yes" ? true : false
         return sorobanService.randomOperations({
             ...body,
+            main: sorobanService.getRandomChildId(+main),
             allowExceed
         })
     }
