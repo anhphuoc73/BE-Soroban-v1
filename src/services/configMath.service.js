@@ -98,11 +98,19 @@ class ConfigMathService {
             throw new UnprocessableEntityError("Missing required fields")
         }
         let allowExceed = body.allowExceed === "yes" ? true : false
-        return sorobanService.randomOperations({
+        let result = await sorobanService.randomOperations({
             ...body,
             main: sorobanService.getRandomChildId(+main),
             allowExceed
         })
+        while (!result || Object.keys(result).length === 0) {
+            result = sorobanService.randomOperations({
+                ...body,
+                main: sorobanService.getRandomChildId(+main),
+                allowExceed
+            })
+        }
+        return result
     }
 
     runOperations = async (body) => {
