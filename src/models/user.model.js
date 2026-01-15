@@ -31,6 +31,7 @@ const userSchema = new Schema(
         soroban_math: { type: Object, default: {} },
         totalCorrect: { type: Number, trim: true },
         totalWrong: { type: Number, trim: true },
+        login_mobile: { type: Number, trim: true },
     },
     { timestamps: true, collection: COLLECTION_NAME }
 )

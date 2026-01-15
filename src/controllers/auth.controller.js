@@ -49,7 +49,7 @@ class AuthController {
             await AuthService.changePassword({ users, password_old, password_new })
         ).send(res);
     };
-   
+
 }
 
 module.exports = new AuthController();

@@ -98,6 +98,7 @@ class UserService {
                     : {}),
             totalCorrect: 0,
             totalWrong: 0,
+            login_mobile: 0,
         }
         const userModel = await getUserModel(INSTANCE_KEY.PRIMARY, "admin")
         const checkUser = await userModel.findOne({ phone: phone })
@@ -164,6 +165,7 @@ class UserService {
 
                         totalCorrect: 0,
                         totalWrong: 0,
+                        login_mobile: 0,
                     };
 
                     await userModel.create(payload);
