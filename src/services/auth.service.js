@@ -27,13 +27,62 @@ const adminService = require("./admin.service");
 const getAdminModel = require("~/models/admin.model");
 
 class AuthService {
-    login = async ({ username, password }) => {
+    login = async ({ username, password, type }) => {
         const passwordHash = sha1(convertToMD5(password));
         const userModel = getUserModel(INSTANCE_KEY.PRIMARY, "admin");
 
         const foundUser = await userModel.findOne({
             username,
             password: passwordHash,
+        });
+        if (!foundUser) {
+            throw new UnprocessableEntityError(
+                StatusResponse.auth.EMAIL_OR_PASSWORD_INCORRECT
+            );
+        }
+        if (type === 'mobile' && foundUser.loginMobile !== 1) {
+            throw new UnprocessableEntityError(
+                StatusResponse.auth.NO_PERMISSION_MOBILE
+            );
+        }
+
+        if (foundUser.position !== 99) {
+            if (foundUser.active !== 1) {
+                throw new UnprocessableEntityError(
+                    StatusResponse.auth.ACCOUNT_INACTIVE
+                );
+            }
+            const adminId = foundUser?.adminId
+            const adminModel = getAdminModel(INSTANCE_KEY.PRIMARY, "admin");
+            const admin = await adminModel.findOne({
+                _id: new ObjectId(adminId),
+            });
+            if (admin?.active === 0) {
+                throw new UnprocessableEntityError(
+                    StatusResponse.auth.ACCOUNT_INACTIVE
+                );
+            }
+        }
+
+        const token = await signToken({
+            payload: { id: foundUser._id.toString() },
+            privateKey: privateKey,
+        });
+
+        return {
+            user: foundUser,
+            access_token: token,
+        };
+    };
+
+    loginApp = async ({ username, password, type }) => {
+        const passwordHash = sha1(convertToMD5(password));
+        const userModel = getUserModel(INSTANCE_KEY.PRIMARY, "admin");
+
+        const foundUser = await userModel.findOne({
+            username,
+            password: passwordHash,
+            loginApp
         });
         if (!foundUser) {
             throw new UnprocessableEntityError(
